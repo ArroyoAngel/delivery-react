@@ -1,0 +1,20 @@
+/* IONT-BUTTON */
+ion-button.custom-radius{
+    --border-radius: 15px;
+}
+ion-button.custom-radius-right{
+    --border-radius: 0 15px 15px 0;
+}
+ion-button.custom-radius-left{
+    --border-radius: 15px 0 0 15px;
+}
+
+/* ION-ITEM */
+ion-item.custom.border-none{
+    --border-style: none;
+}
+
+/* ION-LABEL */
+ion-label.custom-center{
+    text-align: center;
+}

@@ -1,0 +1,33 @@
+ion-segment.segment-request {
+    padding: 0px 10px;
+    margin-bottom: -10px;
+}
+
+.notification{
+    overflow-y: auto;
+    display: flex;
+}
+.notification > ion-item {
+    min-width: 200px;
+    --border-style: none;
+    color: white;
+}
+.notification > ion-item:hover {
+    --color: white;
+}
+.notification > ion-item.success {
+    --background: #55c155;
+}
+.notification > ion-item.warning {
+    --background: #ffbc42;
+}
+.notification > ion-item.error {
+    --background: #ff4c4c;
+}
+ion-modal.modal-product-information > #ion-react-wrapper > ion-button.back-button {
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    --border-radius: 25px;
+    --color: black;
+}

@@ -1,0 +1,11 @@
+.profile-menu{
+    cursor: pointer;
+  }
+  .profile-menu :hover{
+  }
+  .profile-menu-item{
+    cursor: pointer;
+  }
+  .profile-menu-item :hover{
+    background-color: rgba(0, 0, 0, 0.5);
+  }

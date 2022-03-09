@@ -1,3 +1,4 @@
+import React, { Component } from 'react'
 import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
@@ -22,24 +23,70 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import './theme/custom.css'
+
+/* View app */
+import ViewApp from './views/app'
+import ViewUser from './views/user'
+import ViewMain from './views'
+import Error from './views/error'
 
 setupIonicReact();
+class AuthRoute extends Component <{ path: string, authUser: any }> {
+  isDemo: any = null
+  constructor(props: any){
+    super(props)
+  }
+  render() {
+    return (
+      <Route
+        path={this.props.path}
+        render={props => 
+          this.props.authUser? (
+            <ViewApp session={this.props.authUser} {...props}/>
+          ) : (
+            <Redirect
+              to={{
+                pathname: '/user/login',
+                state: { from: props.location }
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
+}
 
 const App: React.FC = () => {
+  let credential: any = localStorage.getItem('credential')
+  let user: any = localStorage.getItem('user')
+  const loginUser = credential&&user?{
+    ...JSON.parse(user),
+    ...JSON.parse(credential),
+  }:null
   return (
     <IonApp>
       <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <Menu />
-          <IonRouterOutlet id="main">
-            <Route path="/" exact={true}>
-              <Redirect to="/page/Inbox" />
-            </Route>
-            <Route path="/page/:name" exact={true}>
-              <Page />
-            </Route>
-          </IonRouterOutlet>
-        </IonSplitPane>
+      <IonReactRouter>
+        <AuthRoute
+          path = '/app'
+          authUser={loginUser}
+        />
+        <Route 
+          path={"/"}
+          exact
+          render={ props => <ViewMain {...props} />}
+        />
+        <Route 
+          path="/user"
+          render={ props => <ViewUser {...props}/>}
+        />
+        <Route
+          path={"/error"}
+          render={ props => <Error {...props} />}
+        />
+      </IonReactRouter>
       </IonReactRouter>
     </IonApp>
   );
