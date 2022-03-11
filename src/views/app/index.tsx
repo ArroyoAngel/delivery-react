@@ -5,6 +5,7 @@ import { Redirect, Route } from 'react-router-dom';
 import Menu from '../../components/SideMenu/Menu';
 
 import Request from './Request';
+import Reports from './Reports';
 import Main from './Main';
 
 class App extends Component<{session:any}> {
@@ -23,6 +24,10 @@ class App extends Component<{session:any}> {
           <Route 
             path={`${this.match.url}/request`}
             render={ props => <Request session={session} {...props}/>}
+          />
+          <Route 
+            path={`${this.match.url}/reports`}
+            render={ props => <Reports session={session} {...props}/>}
           />
           <Route 
             path={`${this.match.url}/main`}
