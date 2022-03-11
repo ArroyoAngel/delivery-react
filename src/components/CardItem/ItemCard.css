@@ -1,0 +1,29 @@
+ion-card.ItemCard > ion-card-content > ion-row > img{
+    width: 95px;
+    margin: -13px 16px -13px -13px;
+    border-radius: 6px 0px 0px 6px;
+}
+
+ion-card.ItemCard > ion-card-content.md{
+    padding: 0px;
+    cursor: pointer;
+}
+
+ion-card.ItemCard > ion-card-content.md > ion-row.md > ion-col.md:first-child{
+    padding: 0px
+}
+
+ion-card.ItemCard > ion-card-content.md > ion-row.md > ion-col.md:not(:first-child){
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+ion-card.ItemCard > ion-card-content.md > ion-row.md > ion-col.md:last-child{
+    padding-top: 18px;
+    padding-bottom: 18px;
+    padding-right: 21px;
+}
+
+ion-col.end{
+    display: flex;
+    flex-direction: row-reverse;
+}

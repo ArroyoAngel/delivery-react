@@ -9,8 +9,10 @@ import {
   IonSegment, IonSegmentButton,
   IonModal,
   IonInfiniteScroll, IonInfiniteScrollContent,
-  IonBackButton, IonHeader, IonToolbar, IonButtons, IonButton
+  IonBackButton, IonHeader, IonToolbar, IonButtons, IonButton, IonRow
 } from '@ionic/react';
+
+import ItemCard from '../../components/CardItem/ItemCard'
 import food from '../../assets/food/Papeis.png'
 import drink from '../../assets/Icons/drink.svg'
 import all from '../../assets/Icons/all.svg'
@@ -146,43 +148,42 @@ class Main extends Component<{session: any}> {
               <IonLabel>Todo</IonLabel>
             </IonSegmentButton>
           </IonSegment>
-          <IonCard>
-            <IonCardContent>
-              <IonList>
-                <IonItemSliding class='products-list'>
-                  {this.state.data.map( (element: any, index:number) => {
-                    return <div key={index}>
-                      <IonItem button onClick={()=>this.setState((prev: any)=>({ modal: !prev.modal }))} key={0}>
-                        <IonAvatar>
-                          <img src={require(`../../assets/${element.type?element.type:'drink'}/color.png`)} />
-                        </IonAvatar>
-                        <IonLabel>
-                          <h2>{element.name}</h2>
-                          <h3>{element.price}</h3>
-                          <p>{element.detail}</p>
-                        </IonLabel>
-                        <IonChip onClick={()=>this.payment()}>
-                          <IonIcon icon={bagAddOutline} color="dark" />
-                          <IonLabel >Comprar</IonLabel>
-                        </IonChip>
-                      </IonItem>
-                    </div>
-                  })}
-                </IonItemSliding>
-              </IonList>
-              <IonInfiniteScroll
-                onIonInfinite={loadData}
-                threshold="100px"
-                disabled={this.state.isInfiniteDisabled}
-              >
-                <IonInfiniteScrollContent
-                  loadingSpinner="bubbles"
-                  loadingText="Loading more data..."
-                ></IonInfiniteScrollContent>
-              </IonInfiniteScroll>
-            </IonCardContent>
-          </IonCard>
-
+          {this.state.data.map( (element: any, index:number) => {
+            return <div key={index}>
+              <ItemCard onClick={()=>this.setState({modal: true})}>
+                <div
+                    className='start' 
+                    style={{
+                    width: '100%', height: '100%',
+                    backgroundImage: `url(${require(`../../assets/${element.type?element.type:'drink'}/color.png`)})`,
+                    backgroundRepeat: 'repeat',
+                    backgroundSize: 'cover',
+                    backgroundAttachment: 'fixed',
+                    backgroundPosition: 'center',
+                    backgroundColor: '#f2f2f2'
+                }}></div>
+                <IonLabel className='center'>
+                  <h2>{element.name}</h2>
+                  <h3>{element.price}</h3>
+                  <p>{element.detail}</p>
+                </IonLabel>
+                <IonChip onClick={()=>this.payment()} className='end'>
+                  <IonIcon icon={bagAddOutline} color="dark" />
+                  <IonLabel >Comprar</IonLabel>
+                </IonChip>
+              </ItemCard>
+            </div>
+          })}
+          <IonInfiniteScroll
+            onIonInfinite={loadData}
+            threshold="100px"
+            disabled={this.state.isInfiniteDisabled}
+          >
+            <IonInfiniteScrollContent
+              loadingSpinner="bubbles"
+              loadingText="Loading more data..."
+            ></IonInfiniteScrollContent>
+          </IonInfiniteScroll>
             <IonModal
               className='modal-product-information'
               isOpen={this.state.modal}
@@ -201,11 +202,9 @@ class Main extends Component<{session: any}> {
                }}></div>
               <IonCard >
                 <IonCardHeader>
-                  
                   <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
                   <IonCardTitle>Card Title</IonCardTitle>
                 </IonCardHeader>
-
                 <IonCardContent>
                   Keep close to Nature's heart... and break clear away, once in awhile,
                   and climb a mountain or spend a week in the woods. Wash your spirit clean.

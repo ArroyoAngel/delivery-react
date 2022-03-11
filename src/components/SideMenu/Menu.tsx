@@ -29,6 +29,14 @@ import {
                 <IonIcon slot="start" ios={mailOutline} md={mailSharp} />
                 <IonLabel>{'Pedidos'}</IonLabel>
               </IonItem>
+              <IonItem className={parent === '/app/history' ? 'selected' : ''} href={'/app/history'}  detail={false}>
+                <IonIcon slot="start" ios={mailOutline} md={mailSharp} />
+                <IonLabel>{'Historial'}</IonLabel>
+              </IonItem>
+              <IonItem className={parent === '/app/reports' ? 'selected' : ''} href={'/app/reports'}  detail={false}>
+                <IonIcon slot="start" ios={mailOutline} md={mailSharp} />
+                <IonLabel>{'Reportes'}</IonLabel>
+              </IonItem>
             </IonMenuToggle>
           </IonList>
           <IonList id="labels-list">
