@@ -22,10 +22,12 @@ import {
       <IonMenu contentId="main" type="overlay">
         <IonContent>
           <IonList id="inbox-list">
-            <IonListHeader>{session.bussines}</IonListHeader>
+            <IonListHeader>
+              <a href='/'>{session.bussines}</a>
+            </IonListHeader>
             <IonNote>{session.email}</IonNote>
             <IonMenuToggle key={0} autoHide={false}>
-              <IonItem className={parent === '/app/request' ? 'selected' : ''} href={'/app/request/form'}  detail={false}>
+              <IonItem className={parent === '/app/request' ? 'selected' : ''} href={'/app/request'}  detail={false}>
                 <IonIcon slot="start" ios={mailOutline} md={mailSharp} />
                 <IonLabel>{'Pedidos'}</IonLabel>
               </IonItem>
@@ -39,13 +41,6 @@ import {
               </IonItem>
             </IonMenuToggle>
           </IonList>
-          <IonList id="labels-list">
-            <IonListHeader>Labels</IonListHeader>
-            <IonItem lines="none" key={0}>
-              <IonIcon slot="start" icon={bookmarkOutline} />
-              <IonLabel>{'Family'}</IonLabel>
-            </IonItem>
-          </IonList>
         </IonContent>
       </IonMenu>
     );
@@ -53,3 +48,13 @@ import {
   
   export default Menu;
   
+  /**
+  
+          <IonList id="labels-list">
+            <IonListHeader>Labels</IonListHeader>
+            <IonItem lines="none" key={0}>
+              <IonIcon slot="start" icon={bookmarkOutline} />
+              <IonLabel>{'Family'}</IonLabel>
+            </IonItem>
+          </IonList>
+   */

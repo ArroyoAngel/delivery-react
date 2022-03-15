@@ -5,6 +5,7 @@ import { IonRouterOutlet, IonButtons, IonHeader, IonMenuButton, IonTitle, IonToo
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
 import Form from './Form'
+import History from './History'
 import TopMenu from '../../../components/TopMenu/Menu'
 class Agroquimicos extends Component<{session: any}> {
   match: any = {}
@@ -31,10 +32,14 @@ class Agroquimicos extends Component<{session: any}> {
         <TopMenu title='Pedidos' session={session} />
         <IonContent>
           <IonRouterOutlet>
-            <Redirect exact from={`${this.match.url}/`} to={`${this.match.url}/form`}/>
+            <Redirect exact from={`${this.match.url}/`} to={`${this.match.url}/history`}/>
             <Route 
               path={`${this.match.url}/form`}
               render={ props => <Form {...props} session={session}/>}
+            />
+            <Route 
+              path={`${this.match.url}/history`}
+              render={ props => <History {...props} session={session}/>}
             />
           </IonRouterOutlet>
         </IonContent>
