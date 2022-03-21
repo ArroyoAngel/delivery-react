@@ -3,7 +3,7 @@ export class User extends Account{
     constructor(){
         super()
     }
-    async register(method: string, payload?: any, account?: any): Promise<void>{
+    async register(method: string, payload?: any, account?: any): Promise<any>{
         let credential: any = null
         switch(method){
             case "google":
@@ -22,10 +22,12 @@ export class User extends Account{
                 credential = await this.authRegisterByEmail(account)
                 break
         }
+        if(!credential)return  { error: 'Ocurrió un error al registrar el correo.' }
         localStorage.setItem('credential', JSON.stringify(credential))
         const user = await this.firebase.registerDocument("usuarios", payload, credential.uid)
+        if(!user)return  { error: 'Ocurrió un error al registrar su información.' }
         localStorage.setItem('user', JSON.stringify(user))
-        console.log("Registro completado")
+        return credential
     }
     async getAll(): Promise<Array<any>>{
         const result = await this.firebase.getCollection("clients")

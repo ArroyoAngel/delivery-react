@@ -1,7 +1,7 @@
-import { Component, Fragment } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import { Component, Fragment, useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker as Mark, Popup, useMap, useMapEvents } from 'react-leaflet'
 import { icon } from 'leaflet'
-import locationIcon from '../../assets/location.png'
+import positionIcon from '../../assets/location.png'
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 
 function ChangeMapView( payload: any) {
@@ -11,43 +11,74 @@ function ChangeMapView( payload: any) {
   return null;
 }
 
-class Map extends Component<any> {
-  constructor(props: any){
-    super(props)
-  }
+const Marker = (props: any) => {
+  const [position, setPosition] = useState(props.position)
+  const L = require('leaflet');
+  const myIcon = L.icon({
+    iconUrl: positionIcon,
+    iconSize: [ 64, 64 ],
+    iconAnchor: [ 32, 64 ],
+    popupAnchor: [ 0, 0 ],
+    shadowUrl: null,
+    shadowSize: null,
+    shadowAnchor: null
+  });
+  
+  const map = useMapEvents({
+    click: (e)=>{
+      map.setView(e.latlng, map.getZoom())
+      const coords = [e.latlng.lat, e.latlng.lng]
+      if(props.assign){
+        setPosition(coords)
+        props.setPosition(coords)
+      }
+    },  
+  })
 
-  render(){
-    const L = require('leaflet');
-    const myIcon = L.icon({
-      iconUrl: locationIcon,
-      iconSize: [ 64, 64 ],
-      iconAnchor: [ 32, 64 ],
-      popupAnchor: [ 0, 0 ],
-      shadowUrl: null,
-      shadowSize: null,
-      shadowAnchor: null
-    });
+  const ref = useRef()
+  useEffect(() => {
+    setPosition(props.position)
+  }, [props]);
 
-    return <Fragment>
-      <MapContainer
-        center={this.props.location}
-        zoom={15}
-        style={{  height: '50vh' }}
-        {...this.props}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://api.maptiler.com/maps/streets/256/{z}/{x}/{y}.png?key=Pa6leDya9suIt1lu73qZ"
-        />
-        <Marker position={this.props.location} icon={myIcon}>
-          <Popup>
-            { this.props.children }
-          </Popup>
-        </Marker>
-        <ChangeMapView coords={this.props.location} />
-      </MapContainer>
-    </Fragment>
+  return <Mark position={position} icon={myIcon}>
+    {props.children?
+      <Popup>{props.children}</Popup>
+    :
+      null
+    }
+  </Mark>
+}
+
+const Map = (props: any) => {
+  const getCurrentPosition = async ()=> {
+    const { latitude, longitude } = await (await Geolocation.getCurrentPosition()).coords
+    setPostion([ latitude, longitude ])
   }
+  
+  const [position, setPostion] = useState([0,0])
+  
+  useEffect(()=>{
+    if(props.position){
+      setPostion(props.position)
+    }else{
+      getCurrentPosition()
+    }
+  }, [props])
+  
+  return <MapContainer
+    center={{ lat: position[0], lng: position[1]}}
+    zoom={13}
+    style={{  height: '50vh' }}
+  >
+    <TileLayer
+      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      url="https://api.maptiler.com/maps/streets/256/{z}/{x}/{y}.png?key=Pa6leDya9suIt1lu73qZ"
+    />
+    <Marker position={position} assign={props.assign} setPosition={props.setPosition}>
+      { props.children }
+    </Marker>
+    <ChangeMapView coords={position} />
+  </MapContainer>
 }
 
 export default Map

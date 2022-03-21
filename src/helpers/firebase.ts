@@ -4,13 +4,13 @@ import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthPro
 
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyB-qmXuLxYVrWLj_YKmyC81sam22nLCQfQ",
-    authDomain: "gerico-748b5.firebaseapp.com",
-    projectId: "gerico-748b5",
-    storageBucket: "gerico-748b5.appspot.com",
-    messagingSenderId: "183455126514",
-    appId: "1:183455126514:web:391c9d99838cd1a91d516b",
-    measurementId: "G-8RS4M9LJGD"
+    apiKey: "AIzaSyAncISehRGmcIslDabmOhmn1MXJ80U5t-0",
+    authDomain: "deliveryapp-1f9b5.firebaseapp.com",
+    projectId: "deliveryapp-1f9b5",
+    storageBucket: "deliveryapp-1f9b5.appspot.com",
+    messagingSenderId: "382801202764",
+    appId: "1:382801202764:web:b0568ba4b43085edbaaee9",
+    measurementId: "G-NM2MRFJXK4"
 };
 
 export class Firebase {
@@ -25,7 +25,8 @@ export class Firebase {
         this.provider = new GoogleAuthProvider()
     }
 
-    async registerDocument(nameCollection: string, payload: any, uid?: string): Promise<void>{
+    async registerDocument(nameCollection: string, payload: any, uid?: string): Promise<any>{
+        let user = null
         try {
             if(uid){
                 await setDoc(doc(this.db, nameCollection, uid), payload)
@@ -34,9 +35,11 @@ export class Firebase {
                     setDoc(doc(this.db, nameCollection, e.id), { id: e.id }, { merge: true });
                 });
             }
+            user = payload
         }catch(e){
             console.error("Error adding document: ", e);
         }
+        return user
     }
     async getCollection(nameCollection: string): Promise<Array<any>>{
         const querySnapshot = await getDocs(collection(this.db, nameCollection));
@@ -79,7 +82,7 @@ export class Firebase {
             credential = userCredential.user
         })
         .catch((error) => {
-            console.log("Error adding user")
+            console.log("Error adding user", error.message)
         });
         return credential
     }

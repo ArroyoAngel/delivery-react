@@ -23,7 +23,7 @@ import {
         <IonContent>
           <IonList id="inbox-list">
             <IonListHeader>
-              <a href='/'>{session.bussines}</a>
+              <a href='/'>{'Rincón del Valle'}</a>
             </IonListHeader>
             <IonNote>{session.email}</IonNote>
             <IonMenuToggle key={0} autoHide={false}>

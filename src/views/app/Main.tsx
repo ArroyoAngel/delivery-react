@@ -9,23 +9,28 @@ import {
   IonSegment, IonSegmentButton,
   IonModal,
   IonInfiniteScroll, IonInfiniteScrollContent,
-  IonBackButton, IonHeader, IonToolbar, IonButtons, IonButton, IonRow
+  IonBackButton, IonHeader, IonToolbar, IonButtons, IonButton, IonRow,
+  IonFab, IonFabButton,
 } from '@ionic/react';
 
 import ItemCard from '../../components/CardItem/ItemCard'
 import food from '../../assets/food/Papeis.png'
+import iconFood from '../../assets/Icons/cuchilleria.svg'
 import drink from '../../assets/Icons/drink.svg'
 import all from '../../assets/Icons/all.svg'
 import foodPNG from '../../assets/food/color.png'
 import drinkPNG from '../../assets/drink/color.png'
 
-import { arrowBack, bagAddOutline, addOutline, add } from 'ionicons/icons';
+import { arrowBack, bagAddOutline, addOutline, remove, cartOutline } from 'ionicons/icons';
 class Main extends Component<{session: any}> {
     public state: any = {
       searchText: '',
       modal: false,
       selected: 0,
       filter: 'all',
+      productView: '',
+      cart: [],
+      cant: 0,
       products: [
         {name: 'Saice', price: 25.5, detail: 'Platillo especial', type: 'food'},
         {name: 'Ranga', price: 25.5, detail: 'Platillo especial', type: 'food'},
@@ -68,10 +73,40 @@ class Main extends Component<{session: any}> {
         this.update = this.update.bind(this)
         this.pushData = this.pushData.bind(this)
         this.filterChange = this.filterChange.bind(this)
+        this.addCart = this.addCart.bind(this)
     }
     update(){
 
     }
+
+    addCart(payload: any){
+      if(!localStorage.getItem('cart')){
+        localStorage.setItem('cart','['+JSON.stringify(payload)+']')
+      }else{
+        let cartStorage: any = localStorage.getItem('cart')
+        let temp = JSON.parse(cartStorage)
+        let productCart = temp.find( (p: any)=>p.name===payload.name )
+        let newCart;
+        if(productCart){
+          productCart.cant += payload.cant
+          newCart = temp.map((e:any)=>{
+            if(e.name===payload.name)e = productCart
+            return e
+          })
+        }
+        else {
+          newCart = [...temp, payload]
+        }
+        
+        this.setState({ 
+          cart: [...newCart],
+          cant: 0
+        })
+        console.log(this.state.cart)
+        localStorage.setItem('cart', JSON.stringify(newCart))
+      }
+    }
+
     pushData(reset?:boolean){
       if(reset)this.setState({
         data: [],
@@ -136,7 +171,7 @@ class Main extends Component<{session: any}> {
           </div>
           <IonSegment class='segment-request' value={this.state.filter} onIonChange={({detail})=>this.filterChange(detail.value)}>
             <IonSegmentButton value="food" aria-selected={true} >
-              <IonIcon icon={food} />
+              <IonIcon icon={iconFood} />
               <IonLabel>Comida</IonLabel>
             </IonSegmentButton>
             <IonSegmentButton value="drink">
@@ -150,7 +185,15 @@ class Main extends Component<{session: any}> {
           </IonSegment>
           {this.state.data.map( (element: any, index:number) => {
             return <div key={index}>
-              <ItemCard onClick={()=>this.setState({modal: true})}>
+              <ItemCard onClick={()=>{
+                let cartStorage: any = localStorage.getItem('cart')
+                if(!cartStorage)cartStorage='[]'
+                this.setState({
+                  modal: true,
+                  productView: element,
+                  cart: JSON.parse(cartStorage)
+                })
+              }}>
                 <div
                     className='start' 
                     style={{
@@ -167,10 +210,6 @@ class Main extends Component<{session: any}> {
                   <h3>{element.price}</h3>
                   <p>{element.detail}</p>
                 </IonLabel>
-                <IonChip onClick={()=>this.payment()} className='end'>
-                  <IonIcon icon={bagAddOutline} color="dark" />
-                  <IonLabel >Comprar</IonLabel>
-                </IonChip>
               </ItemCard>
             </div>
           })}
@@ -202,15 +241,39 @@ class Main extends Component<{session: any}> {
                }}></div>
               <IonCard >
                 <IonCardHeader>
-                  <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                  <IonCardTitle>Card Title</IonCardTitle>
+                  <IonCardTitle>{this.state.productView.name}</IonCardTitle>
+                  <IonCardSubtitle>{this.state.productView.price} Bs. | En carrito: {
+                    this.state.cart.find((e: any)=>e.name===this.state.productView.name)?
+                      this.state.cart.find((e: any)=>e.name===this.state.productView.name).cant
+                    :
+                      0
+                  }</IonCardSubtitle>
                 </IonCardHeader>
                 <IonCardContent>
-                  Keep close to Nature's heart... and break clear away, once in awhile,
-                  and climb a mountain or spend a week in the woods. Wash your spirit clean.
+                  <button onClick={()=>console.log(this.state.cart)}>TEST</button>
+                  Este producto es un alimento proporcionado por el restaurante, preparado bajo las mejores condiciones y considerando la mejor calidad.
+                  <IonItem className='custom border-none'>
+                    <IonButton color='primary' size='default' className='custom-radius-left' onClick={()=>this.setState((prev:any)=>({ cant: prev.cant-1}))}>
+                      <IonIcon icon={remove}></IonIcon>
+                    </IonButton>
+                    <IonLabel className='custom-center'>{this.state.cant}</IonLabel>
+                    <IonButton color='primary' size='default' className='custom-radius-right' onClick={()=>this.setState((prev:any)=>({ cant: prev.cant+1}))}>
+                      <IonIcon icon={addOutline}></IonIcon>
+                    </IonButton>
+                  </IonItem>
+                  <IonButton onClick={()=>this.addCart({ ...this.state.productView, cant: this.state.cant })}>
+                    <IonIcon icon={cartOutline} slot='end'/>
+                    Agregar
+                  </IonButton>
                 </IonCardContent>
               </IonCard>
             </IonModal>
+
+          <IonFab vertical="bottom" horizontal="end" slot="fixed">
+            <IonFabButton onClick={()=>this.payment()}>
+              <IonIcon icon={bagAddOutline} />
+            </IonFabButton>
+          </IonFab>
         </IonContent>
       </IonPage>
     }
